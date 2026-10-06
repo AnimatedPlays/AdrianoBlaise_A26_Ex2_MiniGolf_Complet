@@ -16,10 +16,10 @@ public class Balle : MonoBehaviour
     [Header("Paramètres de tir")]
     [SerializeField] float gaugeForce = 0f;
     [SerializeField] Rigidbody rigidbody;
-bool peutBouger;
-Vector3 direction;
+    bool peutBouger;
+    Vector3 direction;
     [Header("Gauge de force")]
-    
+
     [SerializeField] Slider jaugeUI;
     [SerializeField] float forceMin = 0f;
     [SerializeField] float forceMax = 100f;
@@ -31,7 +31,7 @@ Vector3 direction;
     [SerializeField] InputAction angleAction;
     [SerializeField] float angle;
 
-LineRenderer lineRenderBalle;
+    LineRenderer lineRenderBalle;
 
     // [Header("Composant")]
 
@@ -58,13 +58,13 @@ LineRenderer lineRenderBalle;
             //On convertit dans le type prévu Ex: Vector3, vector2, color, etc.
             transform.position = JsonUtility.FromJson<Vector3>(positionJSON);
         }
-        
+
     }
 
     void Update()
-    {   
+    {
         angle += angleAction.ReadValue<float>();
-        Vector3 direction = Quaternion.Euler(0,angle, 0) * Vector3.forward;
+        Vector3 direction = Quaternion.Euler(0, angle, 0) * Vector3.forward;
 
         lineRenderBalle.SetPosition(0, transform.position);
         lineRenderBalle.SetPosition(1, transform.position + direction);
@@ -73,7 +73,7 @@ LineRenderer lineRenderBalle;
         {
             gaugeForce = 0f;
             jaugeUI.value = gaugeForce;
-            
+
         }
 
         if (ballCharger.IsPressed())
@@ -87,14 +87,14 @@ LineRenderer lineRenderBalle;
         {
             // quand la touche est relaché
             rigidbody.AddForce(direction * gaugeForce * Time.deltaTime, ForceMode.Impulse);
-            jaugeUI.value = gaugeForce;
             gaugeForce = 0f;
+            jaugeUI.value = gaugeForce;
             coupFait++;
 
             // Permet d'enregistrer la position de la balle
             string positionJSON = JsonUtility.ToJson(transform.position);
             PlayerPrefs.SetString("positionBalle", positionJSON);
-            
+
 
         }
 
@@ -113,7 +113,7 @@ LineRenderer lineRenderBalle;
         if (collision.gameObject.tag == "trou")
         {
             rigidbody.linearVelocity = Vector3.zero;
-            
+
             audioSourceBalle.PlayOneShot(sonFin);
             PlayerPrefs.SetInt("coupFait", coupFait);
             PlayerPrefs.DeleteKey("positionBalle");
