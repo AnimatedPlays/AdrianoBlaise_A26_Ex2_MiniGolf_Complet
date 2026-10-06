@@ -5,9 +5,7 @@ using TMPro;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
-using System.Diagnostics;
-using System.Threading.Tasks.Dataflow;
-using System.Numerics;
+
 
 public class Balle : MonoBehaviour
 {
@@ -19,8 +17,8 @@ public class Balle : MonoBehaviour
     [Header("Paramètres de tir")]
     [SerializeField] float gaugeForce = 0f;
     [SerializeField] Rigidbody rigidbody;
-
-
+bool peutBouger;
+Vector3 direction;
     [Header("Gauge de force")]
     
     [SerializeField] Slider jaugeUI;
@@ -32,7 +30,7 @@ public class Balle : MonoBehaviour
     // [Header("Input Actions")]
     [SerializeField] InputAction ballCharger;
 
-
+LineRenderer LineRenderBalle;
     // [Header("Composant")]
 
 
@@ -56,7 +54,7 @@ public class Balle : MonoBehaviour
             // on recupere l'information
             string positionJSON = PlayerPrefs.GetString("positionBalle");
             //On convertit dans le type prévu Ex: Vector3, vector2, color, etc.
-            Transform.position = JsonUtility.FromJson<Vector3>(positionJSON);
+            transform.position = JsonUtility.FromJson<Vector3>(positionJSON);
         }
         
     }
@@ -86,7 +84,7 @@ public class Balle : MonoBehaviour
             coupFait++;
 
             // Permet d'enregistrer la position de la balle
-            string positionJSON = JsonUtility.ToJson(Transform.position);
+            string positionJSON = JsonUtility.ToJson(transform.position);
             PlayerPrefs.SetString("positionBalle", positionJSON);
             
 
@@ -106,14 +104,14 @@ public class Balle : MonoBehaviour
     {
         if (collision.gameObject.tag == "trou")
         {
-            rigidbody.linearVelocity = Vector3.Zero;
+            rigidbody.linearVelocity = Vector3.zero;
             
             audioSourceBalle.PlayOneShot(sonFin);
             PlayerPrefs.SetInt("coupFait", coupFait);
             PlayerPrefs.DeleteKey("positionBalle");
             SceneManager.LoadScene("Intro");
 
-            Debug.log("fin du jeu");
+            Debug.Log("fin du jeu");
         }
     }
 
