@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using UnityEngine.AI;
 
 
 public class Balle : MonoBehaviour
@@ -29,8 +28,11 @@ Vector3 direction;
 
     // [Header("Input Actions")]
     [SerializeField] InputAction ballCharger;
+    [SerializeField] InputAction angleAction;
+    [SerializeField] float angle;
 
-LineRenderer LineRenderBalle;
+LineRenderer lineRenderBalle;
+
     // [Header("Composant")]
 
 
@@ -43,7 +45,7 @@ LineRenderer LineRenderBalle;
     void Start()
     {
         audioSourceBalle = GetComponent<AudioSource>();
-        LineRenderBalle = GetComponent<LineRenderer>();
+        lineRenderBalle = GetComponent<LineRenderer>();
         rigidbody = GetComponent<Rigidbody>();
         jaugeUI.value = 0;
         coupFait = 0;
@@ -60,7 +62,13 @@ LineRenderer LineRenderBalle;
     }
 
     void Update()
-    {
+    {   
+        angle += angleAction.ReadValue<float>();
+        Vector3 direction = Quaternion.Euler(0,angle, 0) * Vector3.forward;
+
+        lineRenderBalle.SetPosition(0, transform.position);
+        lineRenderBalle.SetPosition(1, transform.position + direction);
+
         if (ballCharger.WasPressedThisFrame())
         {
             gaugeForce = 0f;
@@ -78,9 +86,9 @@ LineRenderer LineRenderBalle;
         if (ballCharger.WasReleasedThisFrame())
         {
             // quand la touche est relaché
-            gaugeForce = 0f;
-            jaugeUI.value = gaugeForce;
             rigidbody.AddForce(direction * gaugeForce * Time.deltaTime, ForceMode.Impulse);
+            jaugeUI.value = gaugeForce;
+            gaugeForce = 0f;
             coupFait++;
 
             // Permet d'enregistrer la position de la balle
@@ -140,10 +148,12 @@ LineRenderer LineRenderBalle;
     void OnEnable()
     {
         ballCharger.Enable();
+        angleAction.Enable();
     }
 
     void OnDisable()
     {
         ballCharger.Disable();
+        angleAction.Disable();
     }
 }

@@ -291,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11afeab990a04e4bb8525cd1b983aab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuIntro
-  textepoints: {fileID: 0}
+  textepoints: {fileID: 1370836055}
 --- !u!4 &109412204
 Transform:
   m_ObjectHideFlags: 0
